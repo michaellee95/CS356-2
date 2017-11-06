@@ -31,11 +31,7 @@ public class UserInfo extends javax.swing.JFrame {
      * Creates new form UserInfo
      */
     public UserInfo(User user, UserController userController, Updator updator, MessageCounter messageCounter, PositiveCounter positiveCounter) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        //Set look and feel
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -51,7 +47,8 @@ public class UserInfo extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(UserInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(UserInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }        
+        }   
+        //Update components based on what user has been selected
         initComponents();
         this.user = user;
         this.userName = user.getName();
@@ -224,25 +221,35 @@ public class UserInfo extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Code for what happens when add user button is pressed
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
+        //Find user based on user input
         String userName = followerNameField.getText();
         UserComponent selectedUser = userController.getUser(userName); 
         
+        //Check if this user can follow input user
         if(canAdd(userName, selectedUser)){
             this.user.addFollowed(selectedUser);   
             followedListArea.setText(getFollowedAsList());
         }
     }//GEN-LAST:event_addUserButtonActionPerformed
 
+    //Code for what happens when post tweet button is pressed
     private void postTweetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postTweetButtonActionPerformed
+        /*Get what user typed and update its newsFeed
+        Update newsFeedPanel to show the new message
+        Also call updator to update number of messages
+        */
         String tweet = tweetMessageField.getText();
         this.user.addNewsFeed(tweet);
         newsFeedArea.setText(getNewsFeedAsList());
         updator.visit(messageCounter);
+        //Check if message is positive, if so update number of positive messages
         if (isPositive(tweet))
             updator.visit(positiveCounter);
     }//GEN-LAST:event_postTweetButtonActionPerformed
 
+    //Convert list of users this user follows as a string list
     private String getFollowedAsList(){
         StringBuilder followedList = new StringBuilder();
         List<UserComponent> followed = this.user.getFollowed();
@@ -253,6 +260,7 @@ public class UserInfo extends javax.swing.JFrame {
         return followedList.toString();
     }
     
+    //Convert this user' list of tweets as a string list
     private String getNewsFeedAsList(){
         StringBuilder newsFeedList = new StringBuilder();
         List<String> newsFeed = this.user.getNewsFeed();
@@ -263,17 +271,21 @@ public class UserInfo extends javax.swing.JFrame {
         return newsFeedList.toString();    
     }
     
+    //Method that check if user can be added as a followed
     private boolean canAdd(String userName, UserComponent selectedUser){
         
+        //Check if user is trying to follow self, if so show error message
         if (userName.equalsIgnoreCase(user.getName())){
             JOptionPane.showMessageDialog(this, "Cannot add self ", "Error adding user.", JOptionPane.WARNING_MESSAGE);
             return false;
         }
         else{          
+            //If user does not exist/cannot be found, show error message
             if (selectedUser == null){
                 JOptionPane.showMessageDialog(this, "User does not exist ", "Error searching user.", JOptionPane.WARNING_MESSAGE);     
                 return false;
             }
+            //Check if user is already being followed, if so show error message
             else{
                 for (UserComponent aUser: user.getFollowed()){
                     if(aUser.getName().equalsIgnoreCase(userName)){
@@ -287,8 +299,11 @@ public class UserInfo extends javax.swing.JFrame {
         return true;
     }
     
+    //Method for checking if tweet is positive
     private boolean isPositive(String message){
+        //Split sentence into words
         String[] split = message.split("\\s+");
+        //For each word check if it is positive
         for (String word: split){
             if (word.equalsIgnoreCase("good") || word.equalsIgnoreCase("great") || word.equalsIgnoreCase("excellent"))
                 return true;
@@ -297,6 +312,10 @@ public class UserInfo extends javax.swing.JFrame {
         return false;
     }
     
+    /*Method for checking if user's newsfeed changed (subject added tweet)
+    If so newsFeedPanel should be updated
+    Method is set as thread to continuously check for change
+    */
     private void checkForChange(){
         Runnable checkChange = () -> {
             while(true){

@@ -8,6 +8,9 @@
  *
  * @author Michael
  */
+//Positive counter class that keeps track of how many positive messages exist
+//Does not calculate percentage of how many posts are positive. That is done in AdminControlPanel
+//Implements visitor pattern
 public class PositiveCounter implements Visitable{
     private int counter;
     

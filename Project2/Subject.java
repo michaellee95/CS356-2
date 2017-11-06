@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 
-/**
+ /**
  *
  * @author Michael
  */
+//Subject interface that implements observer pattern
 public interface Subject {
     
     public void addFollowers(UserComponent user);

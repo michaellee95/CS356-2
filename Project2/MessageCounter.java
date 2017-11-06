@@ -8,6 +8,8 @@
  *
  * @author Michael
  */
+//Message counter class that keeps track of how many messages exist
+//Implements visitor pattern
 public class MessageCounter implements Visitable{
     private int counter;
     

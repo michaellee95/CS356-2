@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author Michael
  */
+//UserGroup class that implements composite pattern
 public class UserGroup implements UserComponent{
 
     private String name;

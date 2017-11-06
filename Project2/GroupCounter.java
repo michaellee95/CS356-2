@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
- 
+
 /**
  *
  * @author Michael
  */
+//Group counter class that keeps track of how many groups exist
+//Implements visitor pattern
 public class GroupCounter implements Visitable{
     private int counter;
     

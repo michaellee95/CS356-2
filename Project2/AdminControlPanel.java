@@ -29,7 +29,9 @@ public class AdminControlPanel extends javax.swing.JFrame {
     /**
      * Creates new form AdminControlPanel
      */
+    //admin control panel constructor
     private AdminControlPanel() {
+        //set look and feel
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -55,6 +57,7 @@ public class AdminControlPanel extends javax.swing.JFrame {
         this.setVisible(true);
     }
     
+    //Use singleton pattern. Insure there's only one object of type admincontrolpanel
     public static AdminControlPanel getInstance(){
         if (acp == null){
             synchronized(AdminControlPanel.class){
@@ -256,17 +259,26 @@ public class AdminControlPanel extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Code for what happens when user clicks add user button
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
+        //Check what group user clicked on
         DefaultTreeModel model = (DefaultTreeModel)userListTree.getModel();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) userListTree.getLastSelectedPathComponent();
         
+        //If user did not click any group set default group to root
         if (selectedNode == null)
             selectedNode =  (DefaultMutableTreeNode)model.getRoot();  
         
+        //Or if user clicked on user, set group to root as users cannot have children
         if(!selectedNode.getAllowsChildren()){
             selectedNode =  (DefaultMutableTreeNode)model.getRoot();  
         }
         
+        /*Check what user input into user text field
+        If empty don't do anything. If user text field contains user name that already exist
+        Show a popup error box. Else create new user and add into user group and reload panel
+        Also update user controller to inform creation of new user and call updator to update user counter
+        */
         userName = userNameInputField.getText();
         if (!userName.equals("")){
             if (userController.checkUser(userName)){
@@ -283,19 +295,27 @@ public class AdminControlPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addUserButtonActionPerformed
 
+    //Code for add group button
     private void addGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addGroupButtonActionPerformed
+        //Check what group user clicked on
         DefaultTreeModel model = (DefaultTreeModel)userListTree.getModel();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) userListTree.getLastSelectedPathComponent();
         
+        //If user did not click any group set default group to root
         if (selectedNode == null)
             selectedNode =  (DefaultMutableTreeNode)model.getRoot();    
         
+        //OR if user clicked on user, set group to root as users cannot have children
         if(!selectedNode.getAllowsChildren()){
             selectedNode =  (DefaultMutableTreeNode)model.getRoot();  
         }        
         
+        /*Check what user input into group text field
+        If empty don't do anything. If group text field contains group name that already exist
+        Show a popup error box. Else create new group and add into user group and reload panel
+        Also update user controller to inform creation of new group and call updator to update group counter
+        */        
         groupName = groupNameInputField.getText();
-        
         if(!groupName.equals("")){         
             if (userController.checkGroup(groupName)){
                 DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(groupName, true);
@@ -311,30 +331,38 @@ public class AdminControlPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addGroupButtonActionPerformed
 
+    //When user clicks on message total button show popup box that show how many tweets were posted
     private void messageTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_messageTotalButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Total Message Count: " + messageCounter.getCounter(), "Message Counter.", JOptionPane.PLAIN_MESSAGE);        
     }//GEN-LAST:event_messageTotalButtonActionPerformed
 
+    //When user clicks on group total button show popup box that show how many groups exist
     private void groupTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_groupTotalButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Total Group Count: " + groupCounter.getCounter(), "Group Counter.", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_groupTotalButtonActionPerformed
 
+    //When user clicks on positive percentage button show popup box that show how many tweets contain positive words
     private void positiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positiveButtonActionPerformed
         double positivePercentage = (double)positiveCounter.getCounter()/(double)messageCounter.getCounter() * 100;
         JOptionPane.showMessageDialog(this, "Positive Message Percentage: " + String.format("%.2f", positivePercentage) + "%",
                                         "Positive Message Counter.", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_positiveButtonActionPerformed
 
+    //When user clicks on user total button show popup box that show how many users exist
     private void userTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userTotalButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Total User Count: " + userCounter.getCounter(), "User Counter.", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_userTotalButtonActionPerformed
 
+    //Code for what hapepns when open user view button is clicked
     private void userInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userInfoButtonActionPerformed
+        //Check what user, user clicked on        
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) userListTree.getLastSelectedPathComponent();
         
+        //If user did not click on aything or clicked on a group show error box
         if (selectedNode == null || selectedNode.getAllowsChildren())
             JOptionPane.showMessageDialog(this, "Select User", "Error", JOptionPane.WARNING_MESSAGE);
         
+        //Else create a new userInfo panel and pass selected user into it
         else{
            User user = userController.getUser(selectedNode.getUserObject());
            UserInfo userInfoPanel = new UserInfo(user, userController, updator, messageCounter, positiveCounter);

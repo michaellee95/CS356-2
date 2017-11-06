@@ -8,6 +8,8 @@
  *
  * @author Michael
  */
+//User counter class that keeps track of how many users exist
+//Implements visitor pattern
 public class UserCounter implements Visitable{
 
     private int counter;

@@ -8,6 +8,7 @@
  *
  * @author Michael
  */
+//Observer interface that implements observer pattern
 public interface Observer {
     
     public void update(String message);

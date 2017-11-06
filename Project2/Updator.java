@@ -8,6 +8,9 @@
  *
  * @author Michael
  */
+/*Updator class that implements visitor
+Uses visitor pattern so depending on what object is passed
+it wil update that object*/
 public class Updator implements Visitor{
 
     @Override

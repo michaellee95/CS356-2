@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+ 
 /**
  *
  * @author Michael
  */
-public class Drive {
+//Driver class that starts the admin control panel
+public class Driver {
     
     public static void main (String[] args){
         
+        //Use getInstance method to get admin control panel as it uses singleton pattern
         AdminControlPanel acp = AdminControlPanel.getInstance();
         
         acp.setVisible(true);

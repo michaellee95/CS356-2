@@ -8,6 +8,7 @@
  *
  * @author Michael
  */
+//Visitable interface that implements visitor pattern
 public interface Visitable {
     
     public void accept(Visitor visitor);

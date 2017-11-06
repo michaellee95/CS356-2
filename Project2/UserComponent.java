@@ -8,6 +8,7 @@
  *
  * @author Michael
  */
+//UserComponent interface that implements composite pattern
 public interface UserComponent {
     
     public String getName();
