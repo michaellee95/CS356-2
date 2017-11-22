@@ -12,6 +12,7 @@
 public interface UserComponent {
     
     public String getName();
+    public long getTimeStamp();
     public UserComponent getComponent();
 
 }

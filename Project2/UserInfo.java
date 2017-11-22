@@ -6,7 +6,10 @@
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -25,7 +28,11 @@ public class UserInfo extends javax.swing.JFrame {
     private MessageCounter messageCounter = new MessageCounter();
     private PositiveCounter positiveCounter = new PositiveCounter();
     private int currentNewsFeedCounter;
-    
+    private String dateString;
+    private String lastUpdateTimeString;
+    private long timeStamp;
+    private Date date;
+    private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
     /**
      * Creates new form UserInfo
@@ -52,7 +59,10 @@ public class UserInfo extends javax.swing.JFrame {
         initComponents();
         this.user = user;
         this.userName = user.getName();
-        this.setTitle(userName + "'s Info");
+        this.timeStamp = user.getTimeStamp();        
+        this.date = new Date(timeStamp);
+        this.dateString = sdf.format(date);
+        this.setTitle(userName + "'s Data. User Since: " + dateString);
         this.setLocationRelativeTo(null);
         this.userController = userController;
         this.updator = updator;
@@ -61,8 +71,8 @@ public class UserInfo extends javax.swing.JFrame {
         this.currentNewsFeedCounter = this.user.getNewsFeed().size();
         followedListArea.setText(getFollowedAsList());
         newsFeedArea.setText(getNewsFeedAsList());
+        setLastUpdateTime(timeStamp);
         checkForChange();
-        
     }
 
     /**
@@ -80,6 +90,7 @@ public class UserInfo extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         newsFeedArea = new javax.swing.JTextArea();
         newsFeedLabel = new javax.swing.JLabel();
+        lastUpdateTimeLabel = new javax.swing.JLabel();
         tweetMessageField = new javax.swing.JTextField();
         postTweetButton = new javax.swing.JButton();
         FollowedListPanel = new javax.swing.JPanel();
@@ -119,19 +130,25 @@ public class UserInfo extends javax.swing.JFrame {
         newsFeedLabel.setText("News Feed");
         newsFeedLabel.setText("<html><u>News Feed</u></html>");
 
+        lastUpdateTimeLabel.setText("lastUpdateTime");
+
         javax.swing.GroupLayout newsFeedPanelLayout = new javax.swing.GroupLayout(newsFeedPanel);
         newsFeedPanel.setLayout(newsFeedPanelLayout);
         newsFeedPanelLayout.setHorizontalGroup(
             newsFeedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
             .addGroup(newsFeedPanelLayout.createSequentialGroup()
-                .addComponent(newsFeedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(newsFeedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lastUpdateTimeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         newsFeedPanelLayout.setVerticalGroup(
             newsFeedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, newsFeedPanelLayout.createSequentialGroup()
-                .addComponent(newsFeedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(newsFeedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lastUpdateTimeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(newsFeedLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -313,7 +330,7 @@ public class UserInfo extends javax.swing.JFrame {
     }
     
     /*Method for checking if user's newsfeed changed (subject added tweet)
-    If so newsFeedPanel should be updated
+    If so newsFeedPanel should be updated and so should last update time
     Method is set as thread to continuously check for change
     */
     private void checkForChange(){
@@ -323,16 +340,24 @@ public class UserInfo extends javax.swing.JFrame {
                 if (newLength != currentNewsFeedCounter){
                     currentNewsFeedCounter = newLength;
                     newsFeedArea.setText(getNewsFeedAsList());
+                    setLastUpdateTime(user.getLastUpdateTime());
                 }      
                 try{
                     Thread.sleep(100);
                 }catch(Exception e){
+                    e.printStackTrace();
                     continue;
                 }                
             }
         };
         
         new Thread (checkChange).start();        
+    }
+    
+    //Method for setting last update time
+    private void setLastUpdateTime(long lastUpdateTime){
+        lastUpdateTimeString = sdf.format(lastUpdateTime);
+        this.lastUpdateTimeLabel.setText("Last Update Time: " + lastUpdateTimeString);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -343,6 +368,7 @@ public class UserInfo extends javax.swing.JFrame {
     private javax.swing.JTextField followerNameField;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lastUpdateTimeLabel;
     private javax.swing.JTextArea newsFeedArea;
     private javax.swing.JLabel newsFeedLabel;
     private javax.swing.JPanel newsFeedPanel;

@@ -16,12 +16,17 @@ import java.util.List;
 public class User implements UserComponent,Subject,Observer{
 
     private String name;
+    private long timeStamp;
+    private long lastUpdateTime;
     private List<UserComponent> listOfFollowers = new ArrayList<UserComponent>();
     private List<UserComponent> listOfFollowed = new ArrayList<UserComponent>();
     private List<String> newsFeed = new ArrayList<String>();
+    private AdminControlPanel acp = AdminControlPanel.getInstance();
     
-    public User (String name){
+    public User (String name, long timeStamp){
         this.name = name;
+        this.timeStamp = timeStamp;
+        this.lastUpdateTime = timeStamp;
     }
     
     @Override
@@ -59,22 +64,23 @@ public class User implements UserComponent,Subject,Observer{
     }
     
     //Code for informing observers that their subject
-    //updated their newsfeed
+    //updated their newsfeed and update time
     @Override
-    public void notifyObserver(String message){
+    public void notifyObserver(String message, long lastUpdateTime){
         User user = null;
         //For all of subject's observer, update their newsfeed
         for(UserComponent userToUpdate: listOfFollowers){
             user = (User)userToUpdate;
-            user.update(message);
+            user.update(message, lastUpdateTime);
         }
     }
     
     /*When a user's subject update their newsFeed
     as observer, update their newsFeed as well*/
     @Override
-    public void update(String message){
+    public void update(String message, long lastUpdateTime){
         newsFeed.add(message);
+        this.lastUpdateTime = lastUpdateTime;
     }
     
     public List<String> getNewsFeed(){
@@ -82,10 +88,25 @@ public class User implements UserComponent,Subject,Observer{
     }
     
     //If user posts tweet add tweet to user's newsFeed
-    //Afterwards send tweet to rest of follower
+    //Afterwards send tweet to rest of follower and update time
     public void addNewsFeed(String message){
         String tweet = this.name + ": " + message;
         newsFeed.add(tweet);
-        notifyObserver(tweet);
+        lastUpdateTime = System.currentTimeMillis();
+        notifyObserver(tweet, lastUpdateTime);
+        acp.setLastUpdatedUser(this);
+    }
+
+    @Override
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+    
+    public void setLastUpdateTime(long lastUpdateTime){
+        this.lastUpdateTime = lastUpdateTime;
+    }
+    
+    public long getLastUpdateTime(){
+        return lastUpdateTime;
     }
 }

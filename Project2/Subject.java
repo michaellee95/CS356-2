@@ -13,6 +13,6 @@ public interface Subject {
     
     public void addFollowers(UserComponent user);
     public void addFollowed(UserComponent user);
-    public void notifyObserver(String message);
+    public void notifyObserver(String message, long lastUpdateTime);
     
 }

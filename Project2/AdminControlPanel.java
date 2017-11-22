@@ -25,6 +25,8 @@ public class AdminControlPanel extends javax.swing.JFrame {
     private PositiveCounter positiveCounter = new PositiveCounter();    
     private String userName;
     private String groupName;
+    private String lastUpdatedUser = null;
+    private boolean isUnique = true;
     
     /**
      * Creates new form AdminControlPanel
@@ -91,6 +93,8 @@ public class AdminControlPanel extends javax.swing.JFrame {
         userTotalButton = new javax.swing.JButton();
         userNameInputField = new javax.swing.JTextField();
         groupNameInputField = new javax.swing.JTextField();
+        userVerificationButton = new javax.swing.JButton();
+        lastUserUpdatedButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(700, 500));
@@ -197,6 +201,20 @@ public class AdminControlPanel extends javax.swing.JFrame {
             }
         });
 
+        userVerificationButton.setText("User Verification");
+        userVerificationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userVerificationButtonActionPerformed(evt);
+            }
+        });
+
+        lastUserUpdatedButton.setText("Last User Updated");
+        lastUserUpdatedButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lastUserUpdatedButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,19 +230,23 @@ public class AdminControlPanel extends javax.swing.JFrame {
                         .addComponent(positiveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(userInfoButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(userTotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(groupTotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(8, 8, 8)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(groupNameInputField, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                .addComponent(userNameInputField))
+                                .addComponent(userNameInputField)
+                                .addComponent(groupNameInputField, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(addUserButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(addGroupButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(addGroupButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(userVerificationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(userTotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(groupTotalButton, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                .addComponent(lastUserUpdatedButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -242,7 +264,11 @@ public class AdminControlPanel extends javax.swing.JFrame {
                             .addComponent(groupNameInputField))
                         .addGap(18, 18, 18)
                         .addComponent(userInfoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(75, 75, 75)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(userVerificationButton, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                            .addComponent(lastUserUpdatedButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(userTotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(groupTotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -370,6 +396,27 @@ public class AdminControlPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_userInfoButtonActionPerformed
 
+    //code for what happens when user verification button is clicked
+    private void userVerificationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userVerificationButtonActionPerformed
+        //Call User Controller class and check if all user and group is unique
+        isUnique = userController.isUnique();
+        if(isUnique)
+            JOptionPane.showMessageDialog(this, "All Users and Groups are Valid", "Valid", JOptionPane.PLAIN_MESSAGE);
+        else
+            JOptionPane.showMessageDialog(this, "Not All Users and Groups are Valid", "Invalid", JOptionPane.PLAIN_MESSAGE);            
+    }//GEN-LAST:event_userVerificationButtonActionPerformed
+
+    //code for what happens when last user updated button is clicked
+    private void lastUserUpdatedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastUserUpdatedButtonActionPerformed
+        if (lastUpdatedUser == null)
+            JOptionPane.showMessageDialog(this, "Last Updated User Does Not Exist", "Last Updated User", JOptionPane.PLAIN_MESSAGE);            
+        else
+            JOptionPane.showMessageDialog(this, "Last Updated User is: " + lastUpdatedUser, "Last Updated User", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_lastUserUpdatedButtonActionPerformed
+
+    public void setLastUpdatedUser(UserComponent lastUpdatedUser){
+        this.lastUpdatedUser = lastUpdatedUser.getName();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addGroupButton;
@@ -378,6 +425,7 @@ public class AdminControlPanel extends javax.swing.JFrame {
     private javax.swing.JButton groupTotalButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton lastUserUpdatedButton;
     private javax.swing.JButton messageTotalButton;
     private javax.swing.JButton positiveButton;
     private javax.swing.JLabel treeViewLabel;
@@ -385,5 +433,6 @@ public class AdminControlPanel extends javax.swing.JFrame {
     private javax.swing.JTree userListTree;
     private javax.swing.JTextField userNameInputField;
     private javax.swing.JButton userTotalButton;
+    private javax.swing.JButton userVerificationButton;
     // End of variables declaration//GEN-END:variables
 }

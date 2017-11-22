@@ -16,10 +16,12 @@ import java.util.List;
 public class UserGroup implements UserComponent{
 
     private String name;
+    private long timeStamp;
     private List<UserComponent> userComponent = new ArrayList<>();
     
-    public UserGroup(String name){
+    public UserGroup(String name, long timeStamp){
         this.name = name;
+        this.timeStamp = timeStamp;
     }
     
     public void add(UserComponent newUserComponent){
@@ -38,5 +40,10 @@ public class UserGroup implements UserComponent{
     @Override
     public UserComponent getComponent() {
         return this;
+    }
+
+    @Override
+    public long getTimeStamp() {
+        return timeStamp;
     }
 }

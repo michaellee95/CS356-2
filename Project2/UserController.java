@@ -17,6 +17,7 @@ public class UserController {
     
     private List<UserComponent> listOfUsers = new ArrayList<>();
     private List<UserComponent> listOfGroups = new ArrayList<>();  
+    private long timeStamp;
     
     public UserController(){
         
@@ -44,21 +45,24 @@ public class UserController {
    
     //Add group to listOfGroups
     public void addGroup(String groupName){
-        UserGroup newUserGroup = new UserGroup(groupName);
+        timeStamp = System.currentTimeMillis();
+        UserGroup newUserGroup = new UserGroup(groupName, timeStamp);
         listOfGroups.add(newUserGroup);        
     }
     
     //Add group to listOfGroups but also add group to specific group
     public void addGroup(String groupName, Object selectedNode){
-        UserGroup newUserGroup = new UserGroup(groupName);
+        timeStamp = System.currentTimeMillis();        
+        UserGroup newUserGroup = new UserGroup(groupName, timeStamp);
         listOfGroups.add(newUserGroup); 
         UserGroup selectedGroup = getGroup(selectedNode);
         selectedGroup.add(newUserGroup);
     }
     
     //Add user to listOfUser and to speicifc group
-    public void addUser(String userName, Object selectedNode){     
-        User newUser = new User(userName);        
+    public void addUser(String userName, Object selectedNode){ 
+        timeStamp = System.currentTimeMillis();        
+        User newUser = new User(userName, timeStamp);        
         listOfUsers.add(newUser);
         UserGroup selectedGroup = getGroup(selectedNode);
         selectedGroup.add(newUser);
@@ -98,5 +102,24 @@ public class UserController {
             }
         }
         return selectedUser;        
+    }
+    
+    //Return true if every user and group does not contain space
+    //No need to check if name is unique since it is checked already
+    public boolean isUnique(){
+        String name;
+        for (UserComponent user: listOfUsers){
+            name = user.getName();
+            if (name.contains(" "))
+                return false;
+        }
+
+        for (UserComponent group: listOfGroups){
+            name = group.getName();
+            if (name.contains(" "))
+                return false;
+        }        
+        
+        return true;
     }
 }

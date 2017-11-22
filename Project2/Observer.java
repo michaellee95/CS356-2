@@ -11,5 +11,5 @@
 //Observer interface that implements observer pattern
 public interface Observer {
     
-    public void update(String message);
+    public void update(String message, long lastUpdateTime);
 }
